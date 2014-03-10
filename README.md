@@ -1,8 +1,12 @@
-#coccinella#
+Coccinella
+===================================
 
- <b>Run</b>
- $ mvn tomcat7:run
+Run
+-----------------------------------
+$ mvn tomcat7:run
 
- http://localhost:8080/coccinella
+View
+-----------------------------------
+http://localhost:8080/coccinella
 
  
