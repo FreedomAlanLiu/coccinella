@@ -8,7 +8,7 @@
 
     <import resource="classpath:/META-INF/spring/coccinella-env.xml" />
 
-    <jpa:repositories base-package="war.domain.repository"></jpa:repositories>
+    <jpa:repositories base-package="org.daybreak.coccinella.domain.repository"></jpa:repositories>
 
     <bean id="jpaVendorAdapter"
         class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
@@ -19,7 +19,7 @@
     <bean
         class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
         id="entityManagerFactory">
-        <property name="packagesToScan" value="war.domain.model" />
+        <property name="packagesToScan" value="org.daybreak.coccinella.domain.model" />
         <property name="dataSource" ref="dataSource" />
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
         <property name="jpaPropertyMap">
