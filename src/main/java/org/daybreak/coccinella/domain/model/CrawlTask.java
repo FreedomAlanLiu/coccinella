@@ -39,11 +39,9 @@ public class CrawlTask implements Serializable {
     
     // http -> url, params, encode, method
     
-    private enum HttpMethod {
+    public enum HttpMethod {
         GET,
-        POST,
-        PUT,
-        DELETE
+        POST
     }
     
     @Column(name = "URL")
