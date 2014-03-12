@@ -1,38 +1,36 @@
 package org.daybreak.coccinella.domain.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 /**
- * 工商局
  *
- * Created by Alan on 14-3-11.
+ * @author Alan
  */
 @Entity
-@Table(name = "T_AIC")
-public class AIC implements Serializable {
+@Table(name = "T_PARSER")
+public class Parser implements Serializable {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue
     private Integer id;
 
-    // 工商局名称
     @Column(name = "NAME")
-    @NotNull
     private String name;
 
-    // 省份或直辖市
-    @Column(name = "PROVINCE")
-    @NotNull
-    private String province;
-
-    // 官网
-    @Column(name = "WEBSITE")
-    private String website;
+    @Column(name = "DISCRIMINATION")
+    private String discrimination;
 
     @Column(name = "CREATE_DATE")
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -42,9 +40,10 @@ public class AIC implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date updateDate;
     
-    @OneToMany(mappedBy = "aic", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<CrawlTask> crawlTaskList;
-    
+    @ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "CRAWL_TASK_ID", nullable = false)
+    private CrawlTask crawlTask;
+
     public Integer getId() {
         return id;
     }
@@ -61,20 +60,12 @@ public class AIC implements Serializable {
         this.name = name;
     }
 
-    public String getProvince() {
-        return province;
+    public String getDiscrimination() {
+        return discrimination;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setDiscrimination(String discrimination) {
+        this.discrimination = discrimination;
     }
 
     public Date getCreateDate() {
@@ -93,11 +84,4 @@ public class AIC implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public List<CrawlTask> getCrawlTaskList() {
-        return crawlTaskList;
-    }
-
-    public void setCrawlTaskList(List<CrawlTask> crawlTaskList) {
-        this.crawlTaskList = crawlTaskList;
-    }
 }

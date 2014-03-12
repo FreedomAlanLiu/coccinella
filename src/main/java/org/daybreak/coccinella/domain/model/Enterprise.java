@@ -1,6 +1,5 @@
 package org.daybreak.coccinella.domain.model;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -72,13 +71,15 @@ public class Enterprise implements Serializable {
     private String registrationAuthority;
 
     @Column(name = "CREATE_DATE")
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date createDate;
 
     @Column(name = "UPDATE_DATE")
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date updateDate;
 
-    @ManyToOne
-    @JoinColumn(name = "AIC_ID", insertable = false, updatable = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "AIC_ID", nullable = false)
     private AIC aic;
 
     public Integer getId() {
@@ -193,7 +194,9 @@ public class Enterprise implements Serializable {
         this.registrationAuthority = registrationAuthority;
     }
 
-    public Date getCreateDate() { return createDate; }
+    public Date getCreateDate() {
+        return createDate;
+    }
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
@@ -207,7 +210,9 @@ public class Enterprise implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public AIC getAic() { return aic; }
+    public AIC getAic() {
+        return aic;
+    }
 
     public void setAic(AIC aic) {
         this.aic = aic;
