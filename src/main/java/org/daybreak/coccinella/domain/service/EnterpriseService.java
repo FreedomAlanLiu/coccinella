@@ -11,5 +11,5 @@ public interface EnterpriseService {
     
     public Page<Enterprise> searchEnterprises(String province, String name, int page, int size);
     
-    public Enterprise crawlEnterprise();
+    public void crawlEnterprises(String province, String enterpriseName);
 }

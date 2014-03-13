@@ -12,4 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface EnterpriseRepository extends JpaRepository<Enterprise, Integer> {
 
     Page<Enterprise> findByAicAndNameLike(AIC aic, String name, Pageable pageable);
+    
+    Enterprise findByAicAndName(AIC aic, String name);
 }

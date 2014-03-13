@@ -12,6 +12,34 @@ import java.util.Date;
 @Entity
 @Table(name = "T_ENTERPRISE")
 public class Enterprise implements Serializable {
+    
+    public static final String SEARCH_ENTERPRISE_NAME_KEY = "待查询企业名称";
+    
+    public static final String NAME_KEY = "企业名称";
+    
+    public static final String REGISTRATION_NUMBER_KEY = "注册编号";
+    
+    public static final String ADDRESS_KEY = "地址";
+    
+    public static final String POSTAL_CODE_KEY = "邮编";
+    
+    public static final String AGENT_KEY = "法人";
+    
+    public static final String TYPE_KEY = "企业类型";
+    
+    public static final String REGISTERED_CAPITAL_KEY = "注册资本";
+    
+    public static final String SCOPE_KEY = "经营范围及方式";
+    
+    public static final String CATEGORY_KEY = "行业分类";
+    
+    public static final String ESTABLISHMENT_DATE_KEY = "成立日期";
+    
+    public static final String APPROVAL_DATE_KEY = "核准日期";
+    
+    public static final String CURRENT_STATUS_KEY = "当前状态";
+    
+    public static final String REGISTRATION_AUTHORITY_KEY = "登记机关";
 
     @Id
     @Column(name = "ID")
@@ -31,7 +59,7 @@ public class Enterprise implements Serializable {
     private String address;
 
     // 邮编
-    @Column(name = "POSTALCODE")
+    @Column(name = "POSTAL_CODE")
     private String postalCode;
 
     // 法人

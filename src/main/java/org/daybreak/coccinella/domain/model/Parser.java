@@ -41,8 +41,8 @@ public class Parser implements Serializable {
     private Date updateDate;
     
     @ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "CRAWL_TASK_ID", nullable = false)
-    private CrawlTask crawlTask;
+    @JoinColumn(name = "AIC_ID", nullable = false)
+    private AIC aic;
 
     public Integer getId() {
         return id;
@@ -84,4 +84,11 @@ public class Parser implements Serializable {
         this.updateDate = updateDate;
     }
 
+    public AIC getAic() {
+        return aic;
+    }
+
+    public void setAic(AIC aic) {
+        this.aic = aic;
+    }
 }

@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 工商局
@@ -44,6 +45,9 @@ public class AIC implements Serializable {
     
     @OneToMany(mappedBy = "aic", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CrawlTask> crawlTaskList;
+    
+    @OneToMany(mappedBy = "aic", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Parser> parserSet;
     
     public Integer getId() {
         return id;
@@ -99,5 +103,13 @@ public class AIC implements Serializable {
 
     public void setCrawlTaskList(List<CrawlTask> crawlTaskList) {
         this.crawlTaskList = crawlTaskList;
+    }
+
+    public Set<Parser> getParserSet() {
+        return parserSet;
+    }
+
+    public void setParserSet(Set<Parser> parserSet) {
+        this.parserSet = parserSet;
     }
 }

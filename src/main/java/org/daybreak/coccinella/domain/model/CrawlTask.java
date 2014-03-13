@@ -55,9 +55,6 @@ public class CrawlTask implements Serializable {
     
     @Column(name = "METHOD")
     private HttpMethod method;
-    
-    @OneToMany(mappedBy = "crawlTask", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<Parser> parserSet;
 
     public Integer getId() {
         return id;
@@ -122,14 +119,4 @@ public class CrawlTask implements Serializable {
     public void setMethod(HttpMethod method) {
         this.method = method;
     }
-
-    public Set<Parser> getParserSet() {
-        return parserSet;
-    }
-
-    public void setParserSet(Set<Parser> parserSet) {
-        this.parserSet = parserSet;
-    }
-    
-    
 }
