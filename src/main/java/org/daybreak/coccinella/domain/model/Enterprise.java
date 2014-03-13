@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by Alan on 14-3-11.
  */
 @Entity
-@Table(name = "T_ENTERPRISE")
+@Table(name = "T_ENTERPRISES")
 public class Enterprise implements Serializable {
     
     public static final String SEARCH_ENTERPRISE_NAME_KEY = "待查询企业名称";

@@ -19,7 +19,7 @@ import javax.persistence.Table;
  * Created by Alan on 14-3-11.
  */
 @Entity
-@Table(name = "T_CRAWL_TASK")
+@Table(name = "T_CRAWL_TASKS")
 public class CrawlTask implements Serializable {
     
     @Id

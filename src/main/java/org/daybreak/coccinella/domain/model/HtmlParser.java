@@ -10,16 +10,16 @@ import javax.persistence.SecondaryTable;
  * @author Alan
  */
 @Entity
-@SecondaryTable(name = "T_HTML_PARSER", pkJoinColumns = @PrimaryKeyJoinColumn(name = "PARSER_ID"))
+@SecondaryTable(name = "T_HTML_PARSERS", pkJoinColumns = @PrimaryKeyJoinColumn(name = "PARSER_ID"))
 public class HtmlParser extends Parser {
     
-    @Column(name = "NAME_KEY", table="T_HTML_PARSER")
+    @Column(name = "NAME_KEY", table="T_HTML_PARSERS")
     private String nameKey;
     
-    @Column(name = "XPATH", table="T_HTML_PARSER")
+    @Column(name = "XPATH", table="T_HTML_PARSERS")
     private String xpath;
     
-    @Column(name = "REGEX", table="T_HTML_PARSER")
+    @Column(name = "REGEX", table="T_HTML_PARSERS")
     private String regex;
 
     public String getNameKey() {

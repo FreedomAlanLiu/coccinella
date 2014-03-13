@@ -18,7 +18,7 @@ import javax.persistence.Temporal;
  * @author Alan
  */
 @Entity
-@Table(name = "T_PARSER")
+@Table(name = "T_PARSERS")
 public class Parser implements Serializable {
 
     @Id

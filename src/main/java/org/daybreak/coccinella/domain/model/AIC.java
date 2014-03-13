@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by Alan on 14-3-11.
  */
 @Entity
-@Table(name = "T_AIC")
+@Table(name = "T_AICS")
 public class AIC implements Serializable {
 
     @Id
