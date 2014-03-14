@@ -142,6 +142,7 @@ From Medium Devices Up To Larger Devices
 	}
 
 	.page-sidebar-hovering .sub-menu,
+	.page-sidebar-hovering span.badge,
 	.page-sidebar-hovering span.title,
 	.page-sidebar-hovering span.arrow {		  
 		display: none !important;
@@ -313,6 +314,7 @@ From Medium Devices Up To Larger Devices
 	  right: -3px !important;
 	}
 
+	.page-sidebar-closed .page-sidebar-menu > li > a > .badge,
 	.page-sidebar-closed .page-sidebar-menu > li > a > .title,
 	.page-sidebar-closed .page-sidebar-menu > li > a > .arrow {
 	  display: none !important;
@@ -371,6 +373,10 @@ From Medium Devices Up To Larger Devices
 
 	.page-sidebar-closed .page-sidebar-menu > li:hover .title {
 	  display: inline !important;
+	}
+
+	.page-sidebar-closed .page-sidebar-menu > li:hover .badge {
+	  display: block !important;
 	}
 
 	.page-sidebar-closed .page-sidebar-menu > li > .sub-menu {
