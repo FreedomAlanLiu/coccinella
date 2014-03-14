@@ -14,23 +14,32 @@ var TableManaged = function () {
                 "aoColumns": [
                   { "bSortable": false },
                   null,
-                  { "bSortable": false, "sType": "text" },
                   null,
-                  { "bSortable": false },
+                  null,
+                  null,
                   { "bSortable": false }
                 ],
                 "aLengthMenu": [
                     [5, 15, 20, -1],
-                    [5, 15, 20, "All"] // change per page values here
+                    [5, 15, 20, "全部"] // change per page values here
                 ],
                 // set the initial value
                 "iDisplayLength": 5,
                 "sPaginationType": "bootstrap",
                 "oLanguage": {
-                    "sLengthMenu": "_MENU_ records",
+                    "sSearch": "查找",
+                    "sLengthMenu": "每页显示 _MENU_ 条",
+                    "sInfo": "共 _TOTAL_ 条",
+                    "sInfoEmpty": "没有找到可以显示的记录",
+                    "sGroupActions": "_TOTAL_ 条被选择：  ",
+                    "sAjaxRequestGeneralError": "无法完成请求。请检查您的网络连接",
+                    "sEmptyTable":  "表中无可用数据",
+                    "sZeroRecords": "没有找到匹配的记录",
                     "oPaginate": {
-                        "sPrevious": "Prev",
-                        "sNext": "Next"
+                        "sPrevious": "上一页",
+                        "sNext": "下一页",
+                        "sPage": "页",
+                        "sPageOf": "于"
                     }
                 },
                 "aoColumnDefs": [
@@ -61,85 +70,6 @@ var TableManaged = function () {
             jQuery('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-medium input-inline"); // modify table search input
             jQuery('#sample_1_wrapper .dataTables_length select').addClass("form-control input-xsmall"); // modify table per page dropdown
             //jQuery('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
-
-            // begin second table
-            $('#sample_2').dataTable({
-                "aLengthMenu": [
-                    [5, 15, 20, -1],
-                    [5, 15, 20, "All"] // change per page values here
-                ],
-                // set the initial value
-                "iDisplayLength": 5,
-                "sPaginationType": "bootstrap",
-                "oLanguage": {
-                    "sLengthMenu": "_MENU_ records",
-                    "oPaginate": {
-                        "sPrevious": "Prev",
-                        "sNext": "Next"
-                    }
-                },
-               "aoColumnDefs": [
-                    { 'bSortable': false, 'aTargets': [0] },
-                    { "bSearchable": false, "aTargets": [ 0 ] }
-                ]
-            });
-
-            jQuery('#sample_2 .group-checkable').change(function () {
-                var set = jQuery(this).attr("data-set");
-                var checked = jQuery(this).is(":checked");
-                jQuery(set).each(function () {
-                    if (checked) {
-                        $(this).attr("checked", true);
-                    } else {
-                        $(this).attr("checked", false);
-                    }
-                });
-                jQuery.uniform.update(set);
-            });
-
-            jQuery('#sample_2_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
-            jQuery('#sample_2_wrapper .dataTables_length select').addClass("form-control input-xsmall"); // modify table per page dropdown
-            jQuery('#sample_2_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
-
-            // begin: third table
-            $('#sample_3').dataTable({
-                "aLengthMenu": [
-                    [5, 15, 20, -1],
-                    [5, 15, 20, "All"] // change per page values here
-                ],
-                // set the initial value
-                "iDisplayLength": 5,
-                "sPaginationType": "bootstrap",
-                "oLanguage": {
-                    "sLengthMenu": "_MENU_ records",
-                    "oPaginate": {
-                        "sPrevious": "Prev",
-                        "sNext": "Next"
-                    }
-                },
-                "aoColumnDefs": [
-                    { 'bSortable': false, 'aTargets': [0] },
-                    { "bSearchable": false, "aTargets": [ 0 ] }
-                ]
-            });
-
-            jQuery('#sample_3 .group-checkable').change(function () {
-                var set = jQuery(this).attr("data-set");
-                var checked = jQuery(this).is(":checked");
-                jQuery(set).each(function () {
-                    if (checked) {
-                        $(this).attr("checked", true);
-                    } else {
-                        $(this).attr("checked", false);
-                    }
-                });
-                jQuery.uniform.update(set);
-            });
-
-            jQuery('#sample_3_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
-            jQuery('#sample_3_wrapper .dataTables_length select').addClass("form-control input-xsmall"); // modify table per page dropdown
-            jQuery('#sample_3_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
-
         }
 
     };

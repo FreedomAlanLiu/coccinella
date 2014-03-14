@@ -21,9 +21,6 @@ import java.util.Locale;
 @Controller
 public class LoginController extends BaseController {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(LoginController.class);
-
     @Inject
     private HttpSessionCsrfTokenRepository csrfTokenRepository;
 

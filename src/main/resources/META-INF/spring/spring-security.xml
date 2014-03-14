@@ -13,7 +13,7 @@
         <sec:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
         <sec:form-login login-processing-url="/static/j_spring_security_check"
                         login-page="/admin/login"
-                        default-target-url="/admin/index"
+                        default-target-url="/admin/aics"
                         authentication-failure-url="/admin/login?login_error=t" />
 
         <!-- 尝试访问没有权限的页面时跳转的页面 -->

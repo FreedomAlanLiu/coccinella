@@ -15,9 +15,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  *
@@ -51,14 +49,14 @@ public class OschinaBlogPageProcesser implements PageProcessor {
 
     @Test
     public void testCrawl() {
-        /*PostRequest req = new PostRequest("http://www.sgs.gov.cn/lz/etpsInfo.do?method=doSearch");
+        /*CrawlerRequest req = new CrawlerRequest("http://www.sgs.gov.cn/lz/etpsInfo.do?method=doSearch");
         req.addParam("searchType", "1");
         req.addParam("keyWords", "泓远软件");*/
 
         Request request = new Request("http://qyxy.baic.gov.cn/CheckCodeYunSuan?currentTimeMillis=" + System.currentTimeMillis());
 
         Spider.create(new OschinaBlogPageProcesser())
-                .setDownloader(new HttpClientImageDownloader())
+                .setDownloader(new ImageDownloader())
                 .addRequest(request)
                 .addPipeline(new ConsolePipeline())
                 .run();

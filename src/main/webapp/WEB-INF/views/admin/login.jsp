@@ -1,5 +1,4 @@
-<%@taglib prefix="s" uri="http://www.springframework.org/tags" %>
-
+<%@ include file="../common/include.jsp"%>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="zh" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="zh" class="ie9 no-js"> <![endif]-->
@@ -34,7 +33,7 @@
 <link href="${pageContext.request.contextPath}/resources/app/css/pages/login.css" rel="stylesheet" type="text/css"/>
 <link href="${pageContext.request.contextPath}/resources/app/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/app/img/favicon.ico"/>
 </head>
 <!-- BEGIN BODY -->
 <body class="login">
@@ -47,7 +46,7 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
-    <s:url var="authUrl" value="/static/j_spring_security_check" />
+    <spring:url var="authUrl" value="/static/j_spring_security_check" />
 	<!-- BEGIN LOGIN FORM -->
 	<form class="login-form" action="${authUrl}" method="post">
 		<h3 class="form-title">企业信息查询管理平台登录</h3>

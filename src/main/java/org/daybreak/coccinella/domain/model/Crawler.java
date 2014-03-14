@@ -1,6 +1,9 @@
 package org.daybreak.coccinella.domain.model;
 
+import org.springframework.http.HttpMethod;
+
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,8 +22,8 @@ import javax.persistence.Table;
  * Created by Alan on 14-3-11.
  */
 @Entity
-@Table(name = "T_CRAWL_TASKS")
-public class CrawlTask implements Serializable {
+@Table(name = "T_CRAWLER")
+public class Crawler implements Serializable {
     
     @Id
     @Column(name = "ID")
@@ -36,14 +39,10 @@ public class CrawlTask implements Serializable {
     @ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "AIC_ID", nullable = false)
     private AIC aic;
-    
-    // http -> url, params, encode, method
-    
-    public enum HttpMethod {
-        GET,
-        POST
-    }
-    
+
+    @OneToMany(mappedBy = "crawler", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Parser> parsers;
+
     @Column(name = "URL")
     private String url;
     
@@ -118,5 +117,13 @@ public class CrawlTask implements Serializable {
 
     public void setMethod(HttpMethod method) {
         this.method = method;
+    }
+
+    public List<Parser> getParsers() {
+        return parsers;
+    }
+
+    public void setParsers(List<Parser> parsers) {
+        this.parsers = parsers;
     }
 }

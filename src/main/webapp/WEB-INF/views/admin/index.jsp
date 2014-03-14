@@ -35,7 +35,7 @@
 <link href="${pageContext.request.contextPath}/resources/app/css/print.css" rel="stylesheet" type="text/css" media="print"/>
 <link href="${pageContext.request.contextPath}/resources/app/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/app/img/favicon.ico"/>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->

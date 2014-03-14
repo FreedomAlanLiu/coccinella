@@ -35,6 +35,10 @@ public class AIC implements Serializable {
     @Column(name = "WEBSITE")
     private String website;
 
+    // 最大频率（每天抓取次数）
+    @Column(name = "MAX_FREQUENCY")
+    private int maxFrequency;
+
     @Column(name = "CREATE_DATE")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createDate;
@@ -44,10 +48,7 @@ public class AIC implements Serializable {
     private Date updateDate;
     
     @OneToMany(mappedBy = "aic", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<CrawlTask> crawlTaskList;
-    
-    @OneToMany(mappedBy = "aic", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<Parser> parserSet;
+    private List<Crawler> crawlers;
     
     public Integer getId() {
         return id;
@@ -97,19 +98,19 @@ public class AIC implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public List<CrawlTask> getCrawlTaskList() {
-        return crawlTaskList;
+    public List<Crawler> getCrawlers() {
+        return crawlers;
     }
 
-    public void setCrawlTaskList(List<CrawlTask> crawlTaskList) {
-        this.crawlTaskList = crawlTaskList;
+    public void setCrawlers(List<Crawler> crawlers) {
+        this.crawlers = crawlers;
     }
 
-    public Set<Parser> getParserSet() {
-        return parserSet;
+    public int getMaxFrequency() {
+        return maxFrequency;
     }
 
-    public void setParserSet(Set<Parser> parserSet) {
-        this.parserSet = parserSet;
+    public void setMaxFrequency(int maxFrequency) {
+        this.maxFrequency = maxFrequency;
     }
 }

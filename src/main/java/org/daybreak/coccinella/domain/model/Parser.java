@@ -39,10 +39,10 @@ public class Parser implements Serializable {
     @Column(name = "UPDATE_DATE")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date updateDate;
-    
+
     @ManyToOne(optional = false, cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "AIC_ID", nullable = false)
-    private AIC aic;
+    @JoinColumn(name = "CRAWLER_ID", nullable = false)
+    private Crawler crawler;
 
     public Integer getId() {
         return id;
@@ -84,11 +84,11 @@ public class Parser implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public AIC getAic() {
-        return aic;
+    public Crawler getCrawler() {
+        return crawler;
     }
 
-    public void setAic(AIC aic) {
-        this.aic = aic;
+    public void setCrawler(Crawler crawler) {
+        this.crawler = crawler;
     }
 }

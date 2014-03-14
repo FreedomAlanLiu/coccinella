@@ -1,6 +1,5 @@
 package org.daybreak.coccinella.domain.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,16 +8,16 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.daybreak.coccinella.domain.model.AIC;
-import org.daybreak.coccinella.domain.model.CrawlTask;
+import org.daybreak.coccinella.domain.model.Crawler;
 import org.daybreak.coccinella.domain.model.Enterprise;
 import org.daybreak.coccinella.domain.model.HtmlParser;
 import org.daybreak.coccinella.domain.model.Parser;
 import org.daybreak.coccinella.domain.repository.AICRepository;
-import org.daybreak.coccinella.domain.repository.CrawlTaskRepository;
 import org.daybreak.coccinella.domain.repository.EnterpriseRepository;
 import org.daybreak.coccinella.domain.service.EnterpriseService;
-import org.daybreak.coccinella.webmagic.HttpClientPostDownloader;
-import org.daybreak.coccinella.webmagic.PostRequest;
+import org.daybreak.coccinella.webmagic.CrawlerDownloader;
+import org.daybreak.coccinella.webmagic.CrawlerPage;
+import org.daybreak.coccinella.webmagic.CrawlerRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -40,9 +39,6 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     
     @Inject
     AICRepository aicRepository;
-    
-    @Inject
-    CrawlTaskRepository crawlTaskRepository;
     
     @Inject
     EnterpriseRepository enterpriseRepository;
@@ -80,20 +76,23 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             
                 @Override
                 public void process(us.codecraft.webmagic.Page page) {
-                    Set<Parser> parserSet = aic.getParserSet();
-                    for (Parser parser : parserSet) {
-                        if (parser instanceof HtmlParser) {
-                            HtmlParser htmlParser = (HtmlParser) parser;
-                            String xpath = htmlParser.getXpath();
-                            String regex = htmlParser.getRegex();
-                            Html html = page.getHtml();
-                            if (StringUtils.isNotBlank(xpath)) {
-                                html.xpath(xpath);
+                    if (page instanceof CrawlerPage) {
+                        CrawlerPage crawlerPage = (CrawlerPage) page;
+                        List<Parser> parsers = crawlerPage.getCrawler().getParsers();
+                        for (Parser parser : parsers) {
+                            if (parser instanceof HtmlParser) {
+                                HtmlParser htmlParser = (HtmlParser) parser;
+                                String xpath = htmlParser.getXpath();
+                                String regex = htmlParser.getRegex();
+                                Html html = page.getHtml();
+                                if (StringUtils.isNotBlank(xpath)) {
+                                    html.xpath(xpath);
+                                }
+                                if (StringUtils.isNotBlank(regex)) {
+                                    html.regex(regex);
+                                }
+                                page.putField(htmlParser.getNameKey(), html.all());
                             }
-                            if (StringUtils.isNotBlank(regex)) {
-                                html.regex(regex);
-                            }
-                            page.putField(htmlParser.getNameKey(), html.all());
                         }
                     }
                 }
@@ -103,21 +102,16 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                     return Site.me();
                 }
                 
-            });
+            }).setDownloader(new CrawlerDownloader());
         
-        List<CrawlTask> crawlTasks = aic.getCrawlTaskList();
-        long priority = crawlTasks.size();
-        for (final CrawlTask task : crawlTasks) {
-            String params = task.getParams();
+        List<Crawler> crawlers = aic.getCrawlers();
+        long priority = crawlers.size();
+        for (final Crawler crawler : crawlers) {
+            String params = crawler.getParams();
             
             // 无参数的请求
             if (StringUtils.isEmpty(params)) {
-                Request request;
-                if (task.getMethod() == CrawlTask.HttpMethod.GET) {
-                    request = new Request(task.getUrl());
-                } else {
-                    request = new PostRequest(task.getUrl());
-                }
+                CrawlerRequest request = new CrawlerRequest(crawler);
                 request.setPriority(priority);
                 spider.addRequest(request);
             }
@@ -133,33 +127,19 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                         Object it = resultMap.get((value.substring(1)));
                         if (it instanceof Iterable) {
                             for (Object v : (Iterable) it) {
-                                Request request;
-                                if (task.getMethod() == CrawlTask.HttpMethod.GET) {
-                                    request = new Request(task.getUrl());
-                                } else {
-                                    request = new PostRequest(task.getUrl());
-                                    ((PostRequest) request).addParam(name, v.toString());
-                                }
+                                CrawlerRequest request = new CrawlerRequest(crawler);
+                                request.addParam(name, v.toString());
                                 request.setPriority(priority);
                                 spider.addRequest(request);
                             }
                         } else {
-                            Request request;
-                            if (task.getMethod() == CrawlTask.HttpMethod.GET) {
-                                request = new Request(task.getUrl());
-                            } else {
-                                request = new PostRequest(task.getUrl());
-                                ((PostRequest) request).addParam(name, it.toString());
-                            }
+                            CrawlerRequest request = new CrawlerRequest(crawler);
+                            request.addParam(name, it.toString());
                             request.setPriority(priority);
                             spider.addRequest(request);
                         }
                     }
                 }
-            }
-            
-            if (task.getMethod() == CrawlTask.HttpMethod.POST) {
-                spider.setDownloader(new HttpClientPostDownloader());
             }
             
             spider.addPipeline(new Pipeline() {

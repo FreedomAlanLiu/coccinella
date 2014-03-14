@@ -20,7 +20,6 @@ import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.downloader.HttpClientGenerator;
 import us.codecraft.webmagic.selector.PlainText;
-import us.codecraft.webmagic.utils.UrlUtils;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -33,7 +32,7 @@ import java.util.Set;
  *
  * @author Alan
  */
-public class HttpClientImageDownloader extends HttpClientDownloader {
+public class ImageDownloader extends HttpClientDownloader {
 
     private final Logger logger = Logger.getLogger(getClass());
 
@@ -41,7 +40,7 @@ public class HttpClientImageDownloader extends HttpClientDownloader {
 
     private final HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
 
-    public HttpClientImageDownloader() {
+    public ImageDownloader() {
         super();
     }
     
@@ -63,15 +62,15 @@ public class HttpClientImageDownloader extends HttpClientDownloader {
         }
         logger.info("downloading image " + request.getUrl());
         RequestBuilder requestBuilder;
-        if (request instanceof PostRequest) {
-            PostRequest postRequest = (PostRequest) request;
+        if (request instanceof CrawlerRequest) {
+            CrawlerRequest crawlerRequest = (CrawlerRequest) request;
             try {
                 requestBuilder = RequestBuilder
                         .post()
-                        .setUri(postRequest.getUrl())
-                        .setEntity(postRequest.createEntity());
+                        .setUri(crawlerRequest.getUrl())
+                        .setEntity(crawlerRequest.createEntity());
             } catch (UnsupportedEncodingException ex) {
-                logger.warn("The encoding is not supported: " + postRequest.getEncode());
+                logger.warn("The encoding is not supported: " + crawlerRequest.getEncode());
                 return null;
             }
         } else {

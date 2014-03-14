@@ -48,19 +48,19 @@ var Datatable = function () {
                     ],
                     "iDisplayLength": 10, // default records per page
                     "oLanguage": {  // language settings
-                        "sProcessing": '<img src="assets/img/loading-spinner-grey.gif"/><span>&nbsp;&nbsp;Loading...</span>',
-                        "sLengthMenu": "<span class='seperator'>|</span>View _MENU_ records",
-                        "sInfo": "<span class='seperator'>|</span>Found total _TOTAL_ records",
-                        "sInfoEmpty": "No records found to show",
-                        "sGroupActions": "_TOTAL_ records selected:  ",
-                        "sAjaxRequestGeneralError": "Could not complete request. Please check your internet connection",
-                        "sEmptyTable":  "No data available in table",
-                        "sZeroRecords": "No matching records found",
+                        "sProcessing": '<img src="../../img/loading-spinner-grey.gif"/><span>&nbsp;&nbsp;加载中...</span>',
+                        "sLengthMenu": "<span class='seperator'>|</span>显示 _MENU_ 条",
+                        "sInfo": "<span class='seperator'>|</span>共发现 _TOTAL_ 条",
+                        "sInfoEmpty": "没有找到可以显示的记录",
+                        "sGroupActions": "_TOTAL_ 条被选择：  ",
+                        "sAjaxRequestGeneralError": "无法完成请求。请检查您的网络连接",
+                        "sEmptyTable":  "表中无可用数据",
+                        "sZeroRecords": "没有找到匹配的记录",
                         "oPaginate": {
-                            "sPrevious": "Prev",
-                            "sNext": "Next",
-                            "sPage": "Page",
-                            "sPageOf": "of"
+                            "sPrevious": "上一页",
+                            "sNext": "下一页",
+                            "sPage": "页",
+                            "sPageOf": "于"
                         }
                     },
 

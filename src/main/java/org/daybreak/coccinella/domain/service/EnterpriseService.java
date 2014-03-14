@@ -1,5 +1,6 @@
 package org.daybreak.coccinella.domain.service;
 
+import org.daybreak.coccinella.domain.model.AIC;
 import org.daybreak.coccinella.domain.model.Enterprise;
 import org.springframework.data.domain.Page;
 
