@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,7 +17,10 @@ public class BaseController {
     protected static final Logger logger = LoggerFactory
             .getLogger(BaseController.class);
 
-    protected CsrfToken getCsrfToken(HttpServletRequest request, HttpServletResponse response, HttpSessionCsrfTokenRepository csrfTokenRepository) {
+    @Inject
+    protected HttpSessionCsrfTokenRepository csrfTokenRepository;
+
+    protected CsrfToken getCsrfToken(HttpServletRequest request, HttpServletResponse response) {
         CsrfToken csrfToken = csrfTokenRepository.loadToken(request);
         if (csrfToken == null) {
             csrfToken = csrfTokenRepository.generateToken(request);

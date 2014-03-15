@@ -17,10 +17,28 @@ import java.util.List;
 public class AicServiceImpl implements AicService {
 
     @Inject
-    AICRepository aicRepository;
+    private AICRepository aicRepository;
 
     @Override
     public List<AIC> loadAics() {
         return aicRepository.findAll();
+    }
+
+    @Override
+    public AIC loadAic(long id) {
+        return aicRepository.findById(id);
+    }
+
+    @Override
+    public AIC saveAic(AIC aic) {
+        return aicRepository.save(aic);
+    }
+
+    @Override
+    public void deleteAic(long id) {
+        AIC aic = aicRepository.findById(id);
+        if (aic != null) {
+            aicRepository.delete(aic);
+        }
     }
 }

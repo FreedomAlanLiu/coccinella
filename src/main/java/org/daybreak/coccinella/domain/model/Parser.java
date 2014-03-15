@@ -24,7 +24,7 @@ public class Parser implements Serializable {
     @Id
     @Column(name = "ID")
     @GeneratedValue
-    private Integer id;
+    private long id;
 
     @Column(name = "NAME")
     private String name;
@@ -44,11 +44,11 @@ public class Parser implements Serializable {
     @JoinColumn(name = "CRAWLER_ID", nullable = false)
     private Crawler crawler;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

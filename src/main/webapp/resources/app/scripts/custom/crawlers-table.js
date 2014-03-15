@@ -1,4 +1,4 @@
-var TableManaged = function () {
+var CrawlersTable = function () {
 
     return {
 
@@ -10,9 +10,10 @@ var TableManaged = function () {
             }
 
             // begin first table
-            $('#sample_1').dataTable({
+            $('#crawlers_table').dataTable({
                 "aoColumns": [
                   { "bSortable": false },
+                  null,
                   null,
                   null,
                   null,
@@ -43,12 +44,12 @@ var TableManaged = function () {
                     }
                 },
                 "aoColumnDefs": [
-                    { 'bSortable': false, 'aTargets': [0] },
-                    { "bSearchable": false, "aTargets": [ 0 ] }
+                    { 'bSortable': false, 'aTargets': [0, 6] },
+                    { "bSearchable": false, "aTargets": [0, 6] }
                 ]
             });
 
-            jQuery('#sample_1 .group-checkable').change(function () {
+            jQuery('#crawlers_table .group-checkable').change(function () {
                 var set = jQuery(this).attr("data-set");
                 var checked = jQuery(this).is(":checked");
                 jQuery(set).each(function () {
@@ -63,13 +64,13 @@ var TableManaged = function () {
                 jQuery.uniform.update(set);
             });
 
-            jQuery('#sample_1').on('change', 'tbody tr .checkboxes', function(){
+            jQuery('#crawlers_table').on('change', 'tbody tr .checkboxes', function(){
                  $(this).parents('tr').toggleClass("active");
             });
 
-            jQuery('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-medium input-inline"); // modify table search input
-            jQuery('#sample_1_wrapper .dataTables_length select').addClass("form-control input-xsmall"); // modify table per page dropdown
-            //jQuery('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+            jQuery('#crawlers_table_wrapper .dataTables_filter input').addClass("form-control input-medium input-inline"); // modify table search input
+            jQuery('#crawlers_table_wrapper .dataTables_length select').addClass("form-control input-xsmall"); // modify table per page dropdown
+            //jQuery('#crawlers_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
         }
 
     };

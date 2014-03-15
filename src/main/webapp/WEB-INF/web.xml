@@ -117,4 +117,14 @@
         <session-timeout>30</session-timeout>
     </session-config>
 
+    <!-- 浏览器不支持put,delete等method,由该filter将/xxx?_method=delete转换为标准的http delete方法 -->
+    <filter>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <servlet-name>appServlet</servlet-name>
+    </filter-mapping>
 </web-app>

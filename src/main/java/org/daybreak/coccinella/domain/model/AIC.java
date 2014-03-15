@@ -1,5 +1,8 @@
 package org.daybreak.coccinella.domain.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -19,7 +22,7 @@ public class AIC implements Serializable {
     @Id
     @Column(name = "ID")
     @GeneratedValue
-    private Integer id;
+    private long id;
 
     // 工商局名称
     @Column(name = "NAME")
@@ -48,13 +51,14 @@ public class AIC implements Serializable {
     private Date updateDate;
     
     @OneToMany(mappedBy = "aic", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Crawler> crawlers;
-    
-    public Integer getId() {
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AICRepository extends JpaRepository<AIC, Integer> {
+
+    AIC findById(long id);
     
     AIC findByName(String name);
     

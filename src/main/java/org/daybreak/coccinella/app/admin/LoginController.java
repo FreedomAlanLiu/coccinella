@@ -21,12 +21,9 @@ import java.util.Locale;
 @Controller
 public class LoginController extends BaseController {
 
-    @Inject
-    private HttpSessionCsrfTokenRepository csrfTokenRepository;
-
     @RequestMapping(value = "/admin/login", method = {RequestMethod.GET, RequestMethod.POST})
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
-        model.addAttribute("_csrf", getCsrfToken(request, response, csrfTokenRepository));
+        model.addAttribute("_csrf", getCsrfToken(request, response));
         return "admin/login";
     }
 }

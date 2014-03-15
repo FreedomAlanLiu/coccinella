@@ -44,7 +44,7 @@ public class Enterprise implements Serializable {
     @Id
     @Column(name = "ID")
     @GeneratedValue
-    private Integer id;
+    private long id;
 
     // 企业名称
     @Column(name = "NAME")
@@ -110,11 +110,11 @@ public class Enterprise implements Serializable {
     @JoinColumn(name = "AIC_ID", nullable = false)
     private AIC aic;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

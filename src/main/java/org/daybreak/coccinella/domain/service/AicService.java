@@ -11,4 +11,10 @@ import java.util.List;
 public interface AicService {
 
     public List<AIC> loadAics();
+
+    public AIC loadAic(long id);
+
+    public AIC saveAic(AIC aic);
+
+    public void deleteAic(long id);
 }

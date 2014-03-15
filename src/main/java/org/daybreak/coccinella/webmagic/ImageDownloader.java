@@ -70,7 +70,7 @@ public class ImageDownloader extends HttpClientDownloader {
                         .setUri(crawlerRequest.getUrl())
                         .setEntity(crawlerRequest.createEntity());
             } catch (UnsupportedEncodingException ex) {
-                logger.warn("The encoding is not supported: " + crawlerRequest.getEncode());
+                logger.warn("The encoding is not supported: " + crawlerRequest.getCrawler().getEncode());
                 return null;
             }
         } else {
