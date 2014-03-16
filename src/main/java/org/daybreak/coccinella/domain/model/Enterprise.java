@@ -13,7 +13,7 @@ import java.util.Date;
 @Table(name = "T_ENTERPRISES")
 public class Enterprise implements Serializable {
     
-    public static final String SEARCH_ENTERPRISE_NAME_KEY = "待查询企业名称";
+    public static final String SEARCH_ENTERPRISE_NAME_KEY = "enterpriseName";
     
     public static final String NAME_KEY = "企业名称";
     

@@ -32,6 +32,15 @@ public class Parser implements Serializable {
     @Column(name = "DISCRIMINATION")
     private String discrimination;
 
+    @Column(name = "NAME_KEY")
+    private String nameKey;
+
+    @Column(name = "XPATH")
+    private String xpath;
+
+    @Column(name = "REGEX")
+    private String regex;
+
     @Column(name = "CREATE_DATE")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createDate;
@@ -90,5 +99,29 @@ public class Parser implements Serializable {
 
     public void setCrawler(Crawler crawler) {
         this.crawler = crawler;
+    }
+
+    public String getNameKey() {
+        return nameKey;
+    }
+
+    public void setNameKey(String nameKey) {
+        this.nameKey = nameKey;
+    }
+
+    public String getXpath() {
+        return xpath;
+    }
+
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
+    }
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
     }
 }

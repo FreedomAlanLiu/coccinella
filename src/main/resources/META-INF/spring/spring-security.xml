@@ -8,6 +8,7 @@
 
     <sec:http pattern="/resources/**" security="none"/>
     <sec:http pattern="/admin/login" security="none" />
+
     <sec:http auto-config="true" use-expressions="true">
         <!-- 访问/admin/**类型的url需要ROLE_ADMIN角色 -->
         <sec:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
@@ -15,13 +16,6 @@
                         login-page="/admin/login"
                         default-target-url="/admin/aics"
                         authentication-failure-url="/admin/login?login_error=t" />
-
-        <!-- 尝试访问没有权限的页面时跳转的页面 -->
-        <sec:access-denied-handler error-page="/admin/login"/>
-        <!-- logout 页面，logout后清除session -->
-        <sec:logout invalidate-session="true" logout-success-url="/admin/login" />
-        <!-- session 失效后跳转的页面 -->
-        <sec:session-management invalid-session-url="/admin/login" />
 
         <sec:custom-filter ref="csrfFilter" before="LOGOUT_FILTER"/>
         <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>

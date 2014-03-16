@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -105,6 +106,20 @@ public class CrawlerDownloader extends HttpClientDownloader {
             httpResponse = getHttpClient(site).execute(requestBuilder.build());
             int statusCode = httpResponse.getStatusLine().getStatusCode();
             if (acceptStatCode.contains(statusCode)) {
+
+                // 获取消息头的信息
+                if (site.getCookies().isEmpty()) {
+                    Header[] resHeaders = httpResponse.getAllHeaders();
+                    for (int i = 0; i < resHeaders.length; i++) {
+                        if (resHeaders[i].getName().equals("Set-Cookie")) {
+                            String cookie = resHeaders[i].getValue();
+                            String cookieName = cookie.split("=")[0];
+                            String cookieValue = cookie.split("=")[1].split(";")[0];
+                            site.addCookie(cookieName, cookieValue);
+                        }
+                    }
+                }
+
                 //charset
                 if (charset == null) {
                     String value = httpResponse.getEntity().getContentType().getValue();

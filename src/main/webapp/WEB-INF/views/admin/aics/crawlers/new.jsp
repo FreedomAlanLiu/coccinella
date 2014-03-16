@@ -7,7 +7,6 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/app/plugins/select2/select2-metronic.css"/>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/app/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css"/>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/app/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/app/plugins/data-tables/DT_bootstrap.css"/>
     </jsp:attribute>
     <jsp:attribute name="page_content">
         <!-- BEGIN PAGE HEADER-->
@@ -36,7 +35,44 @@
                         </div>
                         <div class="portlet-body form">
                             <!-- BEGIN FORM-->
-                            <form:form action="${pageContext.request.contextPath}/admin/aics/${aic.id}" method="PATCH" modelAttribute="aic" id="form_sample_2" class="form-horizontal">
+                            <form class="form-horizontal">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">省份或者直辖市</label>
+                                        <label class="control-label">${aic.province}</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">名称</label>
+                                        <label class="control-label">${aic.name}</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">官网</label>
+                                        <label class="control-label">${aic.website}</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">最大频率（每天最大抓取次数）</label>
+                                        <label class="control-label">${aic.maxFrequency}</label>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+
+                    <!-- BEGIN VALIDATION STATES-->
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-globe"></i>新建抓取配置
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form">
+                            <!-- BEGIN FORM-->
+                            <form:form action="${pageContext.request.contextPath}/admin/aics/${aic.id}/crawlers" method="POST" modelAttribute="crawler" id="form_sample_2" class="form-horizontal">
                                 <div class="form-body">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button>
@@ -45,19 +81,6 @@
                                     <div class="alert alert-success display-hide">
                                         <button class="close" data-close="alert"></button>
                                         您的表单验证成功！
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">省份或者直辖市
-										<span class="required">
-											 *
-										</span>
-                                        </label>
-                                        <div class="col-md-4">
-                                            <div class="input-icon right">
-                                                <i class="fa"></i>
-                                                <form:input path="province" cssClass="form-control" />
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">名称
@@ -73,7 +96,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">官网
+                                        <label class="control-label col-md-3">URL
 										<span class="required">
 											 *
 										</span>
@@ -81,15 +104,12 @@
                                         <div class="col-md-4">
                                             <div class="input-icon right">
                                                 <i class="fa"></i>
-                                                <form:input path="website" cssClass="form-control" />
+                                                <form:input path="url" cssClass="form-control" />
                                             </div>
-											<span class="help-block">
-												 例如：http://www.demo.com or http://demo.com
-											</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">最大频率（每天最大抓取次数）
+                                        <label class="control-label col-md-3">HTTP方法
 										<span class="required">
 											 *
 										</span>
@@ -97,7 +117,36 @@
                                         <div class="col-md-4">
                                             <div class="input-icon right">
                                                 <i class="fa"></i>
-                                                <form:input path="maxFrequency" cssClass="form-control" />
+                                                <form:select path="method" cssClass="form-control input-medium select2me" data-placeholder="选择...">
+                                                    <form:option value=""/>
+                                                    <form:options items="${org.springframework.http.HttpMethod.values()}" />
+                                                </form:select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">参数
+										<span class="required">
+
+										</span>
+                                        </label>
+                                        <div class="col-md-4">
+                                            <div class="input-icon right">
+                                                <i class="fa"></i>
+                                                <form:input path="params" cssClass="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">编码
+										<span class="required">
+											 *
+										</span>
+                                        </label>
+                                        <div class="col-md-4">
+                                            <div class="input-icon right">
+                                                <i class="fa"></i>
+                                                <form:input path="encode" cssClass="form-control" />
                                             </div>
                                         </div>
                                     </div>
@@ -112,95 +161,7 @@
                             <!-- END FORM-->
                         </div>
                     </div>
-
-                    <div class="portlet box blue">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-globe"></i>抓取配置列表
-                            </div>
-                            <div class="tools">
-                                <a href="javascript:;" class="collapse">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="table-toolbar">
-                                <div class="btn-group">
-                                    <button id="sample_editable_1_new" class="btn green" onclick="javascript:location.href='${pageContext.request.contextPath}/admin/aics/${aic.id}/crawlers/new'">
-                                        添加 <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                                <div class="btn-group pull-right">
-                                </div>
-                            </div>
-                            <table class="table table-striped table-bordered table-hover" id="crawlers_table">
-                                <thead>
-                                <tr>
-                                    <th class="table-checkbox">
-                                        <input type="checkbox" class="group-checkable" data-set="#crawlers_table .checkboxes"/>
-                                    </th>
-                                    <th>
-                                        名称
-                                    </th>
-                                    <th>
-                                        抓取URL
-                                    </th>
-                                    <th>
-                                        HTTP方法
-                                    </th>
-                                    <th>
-                                        参数
-                                    </th>
-                                    <th>
-                                        编码
-                                    </th>
-                                    <th>
-                                        操作
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="crawler" items="${aic.crawlers}">
-                                    <tr class="odd gradeX">
-                                        <td>
-                                            <input type="checkbox" class="checkboxes" value="1"/>
-                                        </td>
-                                        <td>
-                                            ${crawler.name}
-                                        </td>
-                                        <td>
-                                            ${crawler.url}
-                                        </td>
-                                        <td>
-                                            ${crawler.method}
-                                        </td>
-                                        <td>
-                                            ${crawler.params}
-                                        </td>
-                                        <td>
-                                            ${crawler.encode}
-                                        </td>
-                                        <td>
-                                            <form:form action="${pageContext.request.contextPath}/admin/aics/${aic.id}/crawlers/${crawler.id}" method="DELETE">
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn default btn-xs blue" onclick="javascript:location.href='${pageContext.request.contextPath}/admin/aics/${aic.id}/crawlers/${crawler.id}'">
-                                                        <i class="fa fa-share"></i> 查看
-                                                    </button>
-                                                    <button type="button" class="btn default btn-xs purple" onclick="javascript:location.href='${pageContext.request.contextPath}/admin/aics/${aic.id}/crawlers/${crawler.id}/edit'">
-                                                        <i class="fa fa-edit"></i> 编辑
-                                                    </button>
-                                                    <button type="submit" class="btn default btn-xs black" onclick="return confirm('确定要删除吗？');">
-                                                        <i class="fa fa-trash-o"></i> 删除
-                                                    </button>
-                                                </div>
-                                            </form:form>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <!-- END VALIDATION STATES-->
                 </div>
             </div>
 		<!-- END PAGE CONTENT-->
@@ -218,14 +179,13 @@
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="${pageContext.request.contextPath}/resources/app/scripts/core/app.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/app/scripts/custom/aic-form.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/app/scripts/custom/crawlers-table.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/app/scripts/custom/crawler-form.js"></script>
         <script>
             jQuery(document).ready(function() {
             App.init();
-            AicForm.init();
-            CrawlersTable.init();
+            CrawlerForm.init();
         });
+        </script>
         <!-- END PAGE LEVEL SCRIPTS -->
     </jsp:attribute>
 </g:genericpage>

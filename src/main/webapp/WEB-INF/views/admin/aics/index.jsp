@@ -93,7 +93,7 @@
                                                     <button type="button" class="btn default btn-xs purple" onclick="javascript:location.href='${pageContext.request.contextPath}/admin/aics/${aic.id}/edit'">
                                                         <i class="fa fa-edit"></i> 编辑
                                                     </button>
-                                                    <button type="submit" class="btn default btn-xs black" onclick="return confirm('确定要删除${aic.name}吗？');">
+                                                    <button type="submit" class="btn default btn-xs black" onclick="return confirm('确定要删除吗？');">
                                                         <i class="fa fa-trash-o"></i> 删除
                                                     </button>
                                                 </div>

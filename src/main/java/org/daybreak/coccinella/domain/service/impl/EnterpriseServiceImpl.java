@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.daybreak.coccinella.domain.model.AIC;
 import org.daybreak.coccinella.domain.model.Crawler;
 import org.daybreak.coccinella.domain.model.Enterprise;
-import org.daybreak.coccinella.domain.model.HtmlParser;
 import org.daybreak.coccinella.domain.model.Parser;
 import org.daybreak.coccinella.domain.repository.AICRepository;
 import org.daybreak.coccinella.domain.repository.EnterpriseRepository;
@@ -29,6 +29,7 @@ import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
+import us.codecraft.webmagic.selector.Selectable;
 
 /**
  *
@@ -48,7 +49,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
         AIC aic = aicRepository.findByProvince(province);
         Page<Enterprise> enterprises = enterpriseRepository.findByAicAndNameLike(aic, "%" + enterpriseName + "%", 
                 new PageRequest(page, size));
-        if (enterprises == null) {
+        if (enterprises == null || !enterprises.hasContent()) {
             crawlEnterprises(aic, enterpriseName);
             enterpriseRepository.findByAicAndNameLike(aic, "%" + enterpriseName + "%", 
                 new PageRequest(page, size));
@@ -80,25 +81,25 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                         CrawlerPage crawlerPage = (CrawlerPage) page;
                         List<Parser> parsers = crawlerPage.getCrawler().getParsers();
                         for (Parser parser : parsers) {
-                            if (parser instanceof HtmlParser) {
-                                HtmlParser htmlParser = (HtmlParser) parser;
-                                String xpath = htmlParser.getXpath();
-                                String regex = htmlParser.getRegex();
-                                Html html = page.getHtml();
-                                if (StringUtils.isNotBlank(xpath)) {
-                                    html.xpath(xpath);
-                                }
-                                if (StringUtils.isNotBlank(regex)) {
-                                    html.regex(regex);
-                                }
-                                page.putField(htmlParser.getNameKey(), html.all());
+                            String xpath = parser.getXpath();
+                            String regex = parser.getRegex();
+
+                            Selectable html = page.getHtml();
+                            if (StringUtils.isNotBlank(xpath)) {
+                                html = html.xpath(xpath);
                             }
+                            if (StringUtils.isNotBlank(regex)) {
+                                html = html.regex(regex);
+                            }
+                            page.putField(parser.getNameKey(), html.all());
                         }
                     }
                 }
 
                 @Override
                 public Site getSite() {
+                    Site me = Site.me();
+                    me.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0");
                     return Site.me();
                 }
                 
@@ -109,37 +110,50 @@ public class EnterpriseServiceImpl implements EnterpriseService {
         for (final Crawler crawler : crawlers) {
             String params = crawler.getParams();
             
-            // 无参数的请求
             if (StringUtils.isEmpty(params)) {
+                // 无参数的请求
                 CrawlerRequest request = new CrawlerRequest(crawler);
                 request.setPriority(priority);
                 spider.addRequest(request);
-            }
-            
-            // 带参数的请求
-            String[] paramArray = params.split(",");
-            for (String nameValue : paramArray) {
-                String[] nameValueArray = nameValue.split("=");
-                if (nameValueArray.length == 2) {
-                    String name = nameValueArray[0].trim();
-                    String value = nameValueArray[1].trim();
-                    if (value.startsWith("$")) {
-                        Object it = resultMap.get((value.substring(1)));
-                        if (it instanceof Iterable) {
-                            for (Object v : (Iterable) it) {
-                                CrawlerRequest request = new CrawlerRequest(crawler);
-                                request.addParam(name, v.toString());
-                                request.setPriority(priority);
-                                spider.addRequest(request);
+            } else {
+                // 带参数的请求
+                CrawlerRequest request = null;
+                String[] paramArray = params.split(",");
+                for (String nameValue : paramArray) {
+                    String[] nameValueArray = nameValue.split("=");
+                    if (nameValueArray.length == 2) {
+                        String name = nameValueArray[0].trim();
+                        String value = nameValueArray[1].trim();
+                        if (value.startsWith("$")) {
+                            Object it = resultMap.get((value.substring(1)));
+                            if (it instanceof Iterable) {
+                                for (Object v : (Iterable) it) {
+                                    if (request == null) {
+                                        request = new CrawlerRequest(crawler);
+                                        request.setPriority(priority);
+                                    }
+                                    request.addParam(name, v.toString());
+                                }
+                            } else {
+                                if (request == null) {
+                                    request = new CrawlerRequest(crawler);
+                                    request.setPriority(priority);
+                                }
+                                request.addParam(name, it.toString());
                             }
                         } else {
-                            CrawlerRequest request = new CrawlerRequest(crawler);
-                            request.addParam(name, it.toString());
-                            request.setPriority(priority);
-                            spider.addRequest(request);
+                            if (request == null) {
+                                request = new CrawlerRequest(crawler);
+                                request.setPriority(priority);
+                            }
+                            request.addParam(name, value);
                         }
                     }
                 }
+                if (request == null) {
+                    return;
+                }
+                spider.addRequest(request);
             }
             
             spider.addPipeline(new Pipeline() {

@@ -5,6 +5,7 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
@@ -34,7 +35,7 @@ public class Crawler implements Serializable {
     private AIC aic;
 
     @OneToMany(mappedBy = "crawler", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Parser> parsers;
+    private List<Parser> parsers = new ArrayList<>();
 
     @Column(name = "URL")
     private String url;
@@ -43,7 +44,7 @@ public class Crawler implements Serializable {
     private String params;
     
     @Column(name = "ENCODE")
-    private String encode;
+    private String encode = "utf-8";
     
     @Column(name = "METHOD")
     private HttpMethod method;

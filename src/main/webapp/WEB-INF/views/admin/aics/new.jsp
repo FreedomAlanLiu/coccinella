@@ -105,7 +105,7 @@
                                 <div class="form-actions fluid">
                                     <div class="col-md-offset-3 col-md-9">
                                         <button type="submit" class="btn green">提交</button>
-                                        <button type="button" class="btn default">取消</button>
+                                        <button type="button" class="btn default" onclick="javascript:location.href='${pageContext.request.contextPath}/admin/aics'">取消</button>
                                     </div>
                                 </div>
                             </form:form>
