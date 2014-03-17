@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -68,6 +70,9 @@ public class CrawlerDownloader extends HttpClientDownloader {
         RequestBuilder requestBuilder = null;
         if (request instanceof CrawlerRequest) {
             CrawlerRequest crawlerRequest = (CrawlerRequest) request;
+            if (StringUtils.isNotBlank(crawlerRequest.getCrawler().getReferer())) {
+                site.addHeader(HttpHeaders.REFERER, crawlerRequest.getCrawler().getReferer());
+            }
             if (crawlerRequest.getCrawler().getMethod() == HttpMethod.GET) {
                 requestBuilder = RequestBuilder.get().setUri(request.getUrl());
             } else if (crawlerRequest.getCrawler().getMethod() == HttpMethod.POST) {
@@ -106,17 +111,14 @@ public class CrawlerDownloader extends HttpClientDownloader {
             httpResponse = getHttpClient(site).execute(requestBuilder.build());
             int statusCode = httpResponse.getStatusLine().getStatusCode();
             if (acceptStatCode.contains(statusCode)) {
-
-                // 获取消息头的信息
-                if (site.getCookies().isEmpty()) {
-                    Header[] resHeaders = httpResponse.getAllHeaders();
-                    for (int i = 0; i < resHeaders.length; i++) {
-                        if (resHeaders[i].getName().equals("Set-Cookie")) {
-                            String cookie = resHeaders[i].getValue();
-                            String cookieName = cookie.split("=")[0];
-                            String cookieValue = cookie.split("=")[1].split(";")[0];
-                            site.addCookie(cookieName, cookieValue);
-                        }
+                // 消息头的信息
+                Header[] resHeaders = httpResponse.getAllHeaders();
+                for (int i = 0; i < resHeaders.length; i++) {
+                    if (resHeaders[i].getName().equals("Set-Cookie")) {
+                        String cookie = resHeaders[i].getValue();
+                        String cookieName = cookie.split("=")[0];
+                        String cookieValue = cookie.split("=")[1].split(";")[0];
+                        site.addCookie(cookieName, cookieValue);
                     }
                 }
 

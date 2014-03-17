@@ -48,6 +48,9 @@ public class Crawler implements Serializable {
     
     @Column(name = "METHOD")
     private HttpMethod method;
+    
+    @Column(name = "REFERER")
+    private String referer;
 
     public long getId() {
         return id;
@@ -119,5 +122,13 @@ public class Crawler implements Serializable {
 
     public void setParsers(List<Parser> parsers) {
         this.parsers = parsers;
+    }
+
+    public String getReferer() {
+        return referer;
+    }
+
+    public void setReferer(String referer) {
+        this.referer = referer;
     }
 }

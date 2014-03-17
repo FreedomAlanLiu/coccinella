@@ -185,14 +185,15 @@ public class AicController extends BaseController {
         pCrawler.setUrl(crawler.getUrl());
         pCrawler.setMethod(crawler.getMethod());
         pCrawler.setParams(crawler.getParams());
+        pCrawler.setReferer(crawler.getReferer());
         List<Parser> parsers = crawler.getParsers();
         for (Parser parser : parsers) {
             parser.setCrawler(pCrawler);
         }
         pCrawler.getParsers().addAll(parsers);
         pCrawler = aicService.saveCrawler(pCrawler);
-        model.addAttribute("aics", pCrawler.getAic());
-        model.addAttribute("crawler", aicService.saveCrawler(pCrawler));
+        model.addAttribute("aic", pCrawler.getAic());
+        model.addAttribute("crawler", pCrawler);
         return "admin/aics/crawlers/view";
     }
 

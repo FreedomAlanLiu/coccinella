@@ -2,12 +2,11 @@ package org.daybreak.coccinella.domain.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHeaders;
 import org.daybreak.coccinella.domain.model.AIC;
 import org.daybreak.coccinella.domain.model.Crawler;
 import org.daybreak.coccinella.domain.model.Enterprise;
@@ -21,14 +20,12 @@ import org.daybreak.coccinella.webmagic.CrawlerRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
 /**
@@ -84,14 +81,20 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                             String xpath = parser.getXpath();
                             String regex = parser.getRegex();
 
+                            boolean filter = false;
                             Selectable html = page.getHtml();
                             if (StringUtils.isNotBlank(xpath)) {
                                 html = html.xpath(xpath);
+                                filter = true;
                             }
                             if (StringUtils.isNotBlank(regex)) {
                                 html = html.regex(regex);
+                                filter = true;
                             }
-                            page.putField(parser.getNameKey(), html.all());
+                            
+                            if (filter) {
+                                page.putField(parser.getNameKey(), html.all());
+                            }
                         }
                     }
                 }
@@ -99,8 +102,8 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                 @Override
                 public Site getSite() {
                     Site me = Site.me();
-                    me.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0");
-                    return Site.me();
+                    me.setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0");
+                    return me;
                 }
                 
             }).setDownloader(new CrawlerDownloader());
@@ -162,26 +165,26 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                     Map<String, Object> itemMap = resultItems.getAll();
                     Object fullEnterpriseNameObj = itemMap.get(Enterprise.NAME_KEY);
                     if (fullEnterpriseNameObj != null) {
-                        Enterprise enterprise = enterpriseRepository.findByAicAndName(aic, fullEnterpriseNameObj.toString());
+                        Enterprise enterprise = enterpriseRepository.findByAicAndName(aic, getFieldValue(fullEnterpriseNameObj));
                         if (enterprise == null) {
                             enterprise = new Enterprise();
-                            enterprise.setName(fullEnterpriseNameObj.toString());
+                            enterprise.setName(getFieldValue(fullEnterpriseNameObj));
                             enterprise.setAic(aic);
                             enterprise.setCreateDate(new Date());
                         }
-                        enterprise.setAddress(itemMap.get(Enterprise.ADDRESS_KEY).toString());
-                        enterprise.setAgent(itemMap.get(Enterprise.AGENT_KEY).toString());
-                        enterprise.setAgent(itemMap.get(Enterprise.AGENT_KEY).toString());
-                        enterprise.setApprovalDate(itemMap.get(Enterprise.APPROVAL_DATE_KEY).toString());
-                        enterprise.setCategory(itemMap.get(Enterprise.CATEGORY_KEY).toString());
-                        enterprise.setCurrentStatus(itemMap.get(Enterprise.CURRENT_STATUS_KEY).toString());
-                        enterprise.setEstablishmentDate(itemMap.get(Enterprise.ESTABLISHMENT_DATE_KEY).toString());
-                        enterprise.setPostalCode(itemMap.get(Enterprise.POSTAL_CODE_KEY).toString());
-                        enterprise.setRegisteredCapital(itemMap.get(Enterprise.REGISTERED_CAPITAL_KEY).toString());
-                        enterprise.setRegistrationAuthority(itemMap.get(Enterprise.REGISTRATION_AUTHORITY_KEY).toString());
-                        enterprise.setRegistrationNumber(itemMap.get(Enterprise.REGISTRATION_NUMBER_KEY).toString());
-                        enterprise.setScope(itemMap.get(Enterprise.SCOPE_KEY).toString());
-                        enterprise.setType(itemMap.get(Enterprise.TYPE_KEY).toString());
+                        enterprise.setAddress(getFieldValue(itemMap.get(Enterprise.ADDRESS_KEY)));
+                        enterprise.setAgent(getFieldValue(itemMap.get(Enterprise.AGENT_KEY)));
+                        enterprise.setAgent(getFieldValue(itemMap.get(Enterprise.AGENT_KEY)));
+                        enterprise.setApprovalDate(getFieldValue(itemMap.get(Enterprise.APPROVAL_DATE_KEY)));
+                        enterprise.setCategory(getFieldValue(itemMap.get(Enterprise.CATEGORY_KEY)));
+                        enterprise.setCurrentStatus(getFieldValue(itemMap.get(Enterprise.CURRENT_STATUS_KEY)));
+                        enterprise.setEstablishmentDate(getFieldValue(itemMap.get(Enterprise.ESTABLISHMENT_DATE_KEY)));
+                        enterprise.setPostalCode(getFieldValue(itemMap.get(Enterprise.POSTAL_CODE_KEY)));
+                        enterprise.setRegisteredCapital(getFieldValue(itemMap.get(Enterprise.REGISTERED_CAPITAL_KEY)));
+                        enterprise.setRegistrationAuthority(getFieldValue(itemMap.get(Enterprise.REGISTRATION_AUTHORITY_KEY)));
+                        enterprise.setRegistrationNumber(getFieldValue(itemMap.get(Enterprise.REGISTRATION_NUMBER_KEY)));
+                        enterprise.setScope(getFieldValue(itemMap.get(Enterprise.SCOPE_KEY)));
+                        enterprise.setType(getFieldValue(itemMap.get(Enterprise.TYPE_KEY)));
                         enterprise.setUpdateDate(new Date());
                         // 保存到数据库
                         enterpriseRepository.save(enterprise);
@@ -193,5 +196,20 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             // 优先级递减
             priority--;
         }
+    }
+    
+    private String getFieldValue(Object o) {
+        if (o == null) {
+            return "";
+        }
+        if (o instanceof Iterable) {
+            Iterator it = ((Iterable) o).iterator();
+            if (it.hasNext()) {
+                return it.next().toString();
+            } else {
+                return "";
+            }
+        }
+        return o.toString();
     }
 }

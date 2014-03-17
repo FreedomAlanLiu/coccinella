@@ -94,6 +94,10 @@
                                         <label class="control-label col-md-3">编码</label>
                                         <label class="control-label">${crawler.encode}</label>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Referer</label>
+                                        <label class="control-label">${crawler.referer}</label>
+                                    </div>
                                     <br/>
                                     <div class="portlet gren">
                                         <div class="portlet-title">
