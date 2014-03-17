@@ -15,6 +15,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 
 import org.daybreak.coccinella.domain.model.Crawler;
 import org.springframework.http.HttpMethod;
+import us.codecraft.webmagic.selector.Selectable;
 
 /**
  *
@@ -24,7 +25,15 @@ public class MyPageProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
-        page.putField("page", page.getHtml().toString());
+        if (page instanceof CrawlerPage) {
+            CrawlerPage crawlerPage = (CrawlerPage) page;
+            Crawler crawler = crawlerPage.getCrawler();
+            if (crawler.getUrl().contains("method=doSearch")) {
+                Selectable selectable = page.getHtml();
+                //page.putField("page", page.getHtml());
+                page.putField("etpsName", selectable.css(".link6666cc").xpath("//a/@onclick").regex("'(.*?)'").all());
+            }
+        }
     }
 
     @Override

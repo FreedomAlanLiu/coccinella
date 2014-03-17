@@ -35,6 +35,9 @@ public class Parser implements Serializable {
     @Column(name = "NAME_KEY")
     private String nameKey;
 
+    @Column(name = "CSS")
+    private String css;
+
     @Column(name = "XPATH")
     private String xpath;
 
@@ -123,5 +126,13 @@ public class Parser implements Serializable {
 
     public void setRegex(String regex) {
         this.regex = regex;
+    }
+
+    public String getCss() {
+        return css;
+    }
+
+    public void setCss(String css) {
+        this.css = css;
     }
 }

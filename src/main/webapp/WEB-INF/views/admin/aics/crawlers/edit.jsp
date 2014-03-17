@@ -189,6 +189,9 @@
                                                         关键词
                                                     </th>
                                                     <th>
+                                                        CSS选择器
+                                                    </th>
+                                                    <th>
                                                         XPATH
                                                     </th>
                                                     <th>
@@ -202,6 +205,7 @@
                                                 <c:forEach items="${crawler.parsers}" var="parser" varStatus="status">
                                                     <tr>
                                                         <td><input name="parsers[${status.index}].nameKey" value="${parser.nameKey}" class="form-control input-inline input-medium"/></td>
+                                                        <td><input name="parsers[${status.index}].css" value="${parser.css}" class="form-control input-inline input-medium"/></td>
                                                         <td><input name="parsers[${status.index}].xpath" value="${parser.xpath}" class="form-control input-inline input-medium"/></td>
                                                         <td><input name="parsers[${status.index}].regex" value="${parser.regex}" class="form-control input-inline input-medium"/></td>
                                                         <td>

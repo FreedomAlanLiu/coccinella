@@ -25,6 +25,8 @@ public class CrawlerRequest extends Request {
     private final List<NameValuePair> params = new ArrayList<>();
 
     private Crawler crawler;
+
+    private boolean canRepeat;
     
     public CrawlerRequest(Crawler crawler) {
         super(crawler.getUrl());
@@ -49,5 +51,13 @@ public class CrawlerRequest extends Request {
 
     public void setCrawler(Crawler crawler) {
         this.crawler = crawler;
+    }
+
+    public boolean isCanRepeat() {
+        return canRepeat;
+    }
+
+    public void setCanRepeat(boolean canRepeat) {
+        this.canRepeat = canRepeat;
     }
 }

@@ -117,6 +117,9 @@
                                                         关键词
                                                     </th>
                                                     <th>
+                                                        CSS选择器
+                                                    </th>
+                                                    <th>
                                                         XPATH
                                                     </th>
                                                     <th>
@@ -127,6 +130,7 @@
                                                 <c:forEach items="${crawler.parsers}" var="parser" varStatus="status">
                                                     <tr>
                                                         <td>${parser.nameKey}</td>
+                                                        <td>${parser.css}</td>
                                                         <td>${parser.xpath}</td>
                                                         <td>${parser.regex}</td>
                                                     </tr>

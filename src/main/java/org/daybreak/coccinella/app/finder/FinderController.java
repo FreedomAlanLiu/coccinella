@@ -39,6 +39,6 @@ public class FinderController {
 
         model.addAttribute("aics", aicService.loadAics());
         model.addAttribute(new Condition());
-        return "finder/finder";
+        return "finder/enterprises";
     }
 }

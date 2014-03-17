@@ -49,7 +49,7 @@
         <span> </span>
         <div class="page-lock-info">
             <h1>企业信息查询</h1>
-            <form:form action="${pageContext.request.contextPath}/enterprises" modelAttribute="condition" cssClass="form-horizontal col-md-3" method="post">
+            <form:form id="finder_form" action="${pageContext.request.contextPath}/enterprises" modelAttribute="condition" cssClass="form-horizontal col-md-3" method="post">
                 <div class="form-group">
                     <form:select path="province" cssClass="form-control input-medium select2me" data-placeholder="选择一个省份或者直辖市...">
                         <option value=""></option>
@@ -62,7 +62,7 @@
                     <form:input path="enterpriseName" cssClass="form-control input-medium" placeholder="企业名称" />
                 </div>
                 <div class="form-group">
-				    <button type="submit" class="btn blue icn-only">查询 <i class="m-icon-swapright m-icon-white"></i></button>
+				    <button type="button" class="btn blue icn-only" id="finder_submit_button">查询 <i class="m-icon-swapright m-icon-white"></i></button>
                 </div>
             </form:form>
         </div>
@@ -113,6 +113,11 @@
     jQuery(document).ready(function() {
         App.init();
         Lock.init();
+
+        $('#finder_submit_button').click(function() {
+            $('#finder_form').submit();
+            $.blockUI({ message: "<h4><img style='' src='${pageContext.request.contextPath}/resources/app/img/loading-spinner-grey.gif'/> 查询中...</h4>" });
+        });
     });
 </script>
 <!-- END JAVASCRIPTS -->

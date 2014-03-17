@@ -1,10 +1,6 @@
 package org.daybreak.coccinella.domain.service.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.daybreak.coccinella.domain.model.AIC;
@@ -16,7 +12,10 @@ import org.daybreak.coccinella.domain.repository.EnterpriseRepository;
 import org.daybreak.coccinella.domain.service.EnterpriseService;
 import org.daybreak.coccinella.webmagic.CrawlerDownloader;
 import org.daybreak.coccinella.webmagic.CrawlerPage;
+import org.daybreak.coccinella.webmagic.CrawlerQueueScheduler;
 import org.daybreak.coccinella.webmagic.CrawlerRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,9 @@ import us.codecraft.webmagic.selector.Selectable;
  */
 @Service
 public class EnterpriseServiceImpl implements EnterpriseService {
+
+    protected static final Logger logger = LoggerFactory
+            .getLogger(EnterpriseServiceImpl.class);
     
     @Inject
     AICRepository aicRepository;
@@ -78,22 +80,35 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                         CrawlerPage crawlerPage = (CrawlerPage) page;
                         List<Parser> parsers = crawlerPage.getCrawler().getParsers();
                         for (Parser parser : parsers) {
+                            String css = parser.getCss();
                             String xpath = parser.getXpath();
                             String regex = parser.getRegex();
 
                             boolean filter = false;
-                            Selectable html = page.getHtml();
+                            Selectable selectable = page.getHtml();
+                            logger.debug(selectable.toString());
+
+                            if (StringUtils.isNotBlank(css)) {
+                                if (selectable != null) {
+                                    selectable = selectable.css(css);
+                                    filter = true;
+                                }
+                            }
                             if (StringUtils.isNotBlank(xpath)) {
-                                html = html.xpath(xpath);
-                                filter = true;
+                                if (selectable != null) {
+                                    selectable = selectable.xpath(xpath);
+                                    filter = true;
+                                }
                             }
                             if (StringUtils.isNotBlank(regex)) {
-                                html = html.regex(regex);
-                                filter = true;
+                                if (selectable != null) {
+                                    selectable = selectable.regex(regex);
+                                    filter = true;
+                                }
                             }
                             
-                            if (filter) {
-                                page.putField(parser.getNameKey(), html.all());
+                            if (filter && selectable != null) {
+                                page.putField(parser.getNameKey(), selectable.all());
                             }
                         }
                     }
@@ -106,7 +121,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                     return me;
                 }
                 
-            }).setDownloader(new CrawlerDownloader());
+            }).setDownloader(new CrawlerDownloader()).setScheduler(new CrawlerQueueScheduler());
         
         List<Crawler> crawlers = aic.getCrawlers();
         long priority = crawlers.size();
@@ -117,10 +132,12 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                 // 无参数的请求
                 CrawlerRequest request = new CrawlerRequest(crawler);
                 request.setPriority(priority);
+                request.setCanRepeat(true);
                 spider.addRequest(request);
             } else {
                 // 带参数的请求
-                CrawlerRequest request = null;
+                List<CrawlerRequest> requestList = new ArrayList<>();
+                Map<String, String> paramsMap = new HashMap<>();
                 String[] paramArray = params.split(",");
                 for (String nameValue : paramArray) {
                     String[] nameValueArray = nameValue.split("=");
@@ -130,33 +147,50 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                         if (value.startsWith("$")) {
                             Object it = resultMap.get((value.substring(1)));
                             if (it instanceof Iterable) {
+                                boolean requestListEmpty = requestList.isEmpty();
+                                int index = 0;
                                 for (Object v : (Iterable) it) {
-                                    if (request == null) {
-                                        request = new CrawlerRequest(crawler);
+                                    if (requestListEmpty) {
+                                        CrawlerRequest request = new CrawlerRequest(crawler);
                                         request.setPriority(priority);
+                                        request.setCanRepeat(true);
+                                        request.addParam(name, v.toString());
+                                        requestList.add(request);
+                                    } else {
+                                        if (requestList.size() > index + 1) {
+                                            CrawlerRequest request = requestList.get(index);
+                                            if (request != null) {
+                                                request.addParam(name, v.toString());
+                                            }
+                                        }
                                     }
-                                    request.addParam(name, v.toString());
+                                    index++;
                                 }
                             } else {
-                                if (request == null) {
-                                    request = new CrawlerRequest(crawler);
-                                    request.setPriority(priority);
-                                }
-                                request.addParam(name, it.toString());
+                                paramsMap.put(name, it.toString());
                             }
                         } else {
-                            if (request == null) {
-                                request = new CrawlerRequest(crawler);
-                                request.setPriority(priority);
-                            }
-                            request.addParam(name, value);
+                            paramsMap.put(name, value);
                         }
                     }
                 }
-                if (request == null) {
-                    return;
+
+                if (requestList.isEmpty()) {
+                    CrawlerRequest request = new CrawlerRequest(crawler);
+                    request.setPriority(priority);
+                    request.setCanRepeat(true);
+                    for(Map.Entry<String, String> paramEntry : paramsMap.entrySet()) {
+                        request.addParam(paramEntry.getKey(), paramEntry.getValue());
+                    }
+                    spider.addRequest(request);
+                } else {
+                    for (CrawlerRequest request : requestList) {
+                        for(Map.Entry<String, String> paramEntry : paramsMap.entrySet()) {
+                            request.addParam(paramEntry.getKey(), paramEntry.getValue());
+                        }
+                        spider.addRequest(request);
+                    }
                 }
-                spider.addRequest(request);
             }
             
             spider.addPipeline(new Pipeline() {
@@ -164,11 +198,12 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                 public void process(ResultItems resultItems, Task task) {
                     Map<String, Object> itemMap = resultItems.getAll();
                     Object fullEnterpriseNameObj = itemMap.get(Enterprise.NAME_KEY);
-                    if (fullEnterpriseNameObj != null) {
-                        Enterprise enterprise = enterpriseRepository.findByAicAndName(aic, getFieldValue(fullEnterpriseNameObj));
+                    String fullEnterpriseName = getFieldValue(fullEnterpriseNameObj);
+                    if (StringUtils.isNotEmpty(fullEnterpriseName)) {
+                        Enterprise enterprise = enterpriseRepository.findByAicAndName(aic, fullEnterpriseName);
                         if (enterprise == null) {
                             enterprise = new Enterprise();
-                            enterprise.setName(getFieldValue(fullEnterpriseNameObj));
+                            enterprise.setName(fullEnterpriseName);
                             enterprise.setAic(aic);
                             enterprise.setCreateDate(new Date());
                         }
