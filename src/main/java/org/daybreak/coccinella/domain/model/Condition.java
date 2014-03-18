@@ -9,6 +9,8 @@ public class Condition {
 
     private String enterpriseName;
 
+    private boolean cache;
+
     public String getProvince() {
         return province;
     }
@@ -23,5 +25,13 @@ public class Condition {
 
     public void setEnterpriseName(String enterpriseName) {
         this.enterpriseName = enterpriseName;
+    }
+
+    public boolean isCache() {
+        return cache;
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
     }
 }

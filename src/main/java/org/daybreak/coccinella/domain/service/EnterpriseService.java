@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
  */
 public interface EnterpriseService {
     
-    public Page<Enterprise> searchEnterprises(String province, String name, int page, int size);
+    public Page<Enterprise> searchEnterprises(String province, String name, boolean cache, int page, int size);
     
     public void crawlEnterprises(String province, String enterpriseName);
 }

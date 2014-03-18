@@ -21,9 +21,14 @@ import java.util.Locale;
 @Controller
 public class LoginController extends BaseController {
 
-    @RequestMapping(value = "/admin/login", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/admin/login", method = RequestMethod.GET)
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
         model.addAttribute("_csrf", getCsrfToken(request, response));
         return "admin/login";
+    }
+
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String admin(HttpServletRequest request, HttpServletResponse response, Model model) {
+        return "redirect:/admin/aics";
     }
 }

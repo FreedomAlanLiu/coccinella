@@ -17,7 +17,9 @@ import org.daybreak.coccinella.webmagic.CrawlerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Site;
@@ -44,16 +46,23 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     EnterpriseRepository enterpriseRepository;
     
     @Override
-    public Page<Enterprise> searchEnterprises(String province, String enterpriseName, int page, int size) {
+    public Page<Enterprise> searchEnterprises(String province, String enterpriseName, boolean cache, int page, int size) {
         AIC aic = aicRepository.findByProvince(province);
-        Page<Enterprise> enterprises = enterpriseRepository.findByAicAndNameLike(aic, "%" + enterpriseName + "%", 
-                new PageRequest(page, size));
-        if (enterprises == null || !enterprises.hasContent()) {
-            crawlEnterprises(aic, enterpriseName);
-            enterpriseRepository.findByAicAndNameLike(aic, "%" + enterpriseName + "%", 
-                new PageRequest(page, size));
+        if (aic == null) {
+            return new PageImpl<>(new ArrayList<Enterprise>(), new PageRequest(page, size), 10);
         }
-        return enterprises;
+        if (cache) {
+            Page<Enterprise> enterprises = enterpriseRepository.findByAicAndNameLike(aic, "%" + enterpriseName + "%",
+                    new PageRequest(page, size));
+            if (enterprises == null || !enterprises.hasContent()) {
+                List<Enterprise> enterpriseList = crawlEnterprises(aic, enterpriseName);
+                enterprises = new PageImpl<>(enterpriseList, new PageRequest(page, size), 10);
+            }
+            return enterprises;
+        } else {
+            List<Enterprise> enterpriseList = crawlEnterprises(aic, enterpriseName);
+            return new PageImpl<>(enterpriseList, new PageRequest(page, size), 10);
+        }
     }
     
     @Override
@@ -68,7 +77,8 @@ public class EnterpriseServiceImpl implements EnterpriseService {
      * @param aic
      * @param enterpriseName 
      */
-    private void crawlEnterprises(final AIC aic, String enterpriseName) {
+    private List<Enterprise> crawlEnterprises(final AIC aic, String enterpriseName) {
+        final Set<Enterprise> enterpriseSet = new LinkedHashSet<>();
         final Map<String, Object> resultMap = new HashMap<>();
         resultMap.put(Enterprise.SEARCH_ENTERPRISE_NAME_KEY, enterpriseName);
         
@@ -78,6 +88,22 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                 public void process(us.codecraft.webmagic.Page page) {
                     if (page instanceof CrawlerPage) {
                         CrawlerPage crawlerPage = (CrawlerPage) page;
+
+                        // 将其他链接加入请求链
+                        /*List<String> links = page.getHtml().links().all();
+                        for (String link : links) {
+                            Crawler crawler = new Crawler();
+                            crawler.setName(link);
+                            crawler.setAic(crawlerPage.getCrawler().getAic());
+                            crawler.setUrl(link);
+                            crawler.setParsers(crawlerPage.getCrawler().getParsers());
+                            crawler.setMethod(HttpMethod.GET);
+                            CrawlerRequest newCrawlerReq = new CrawlerRequest(crawler);
+                            newCrawlerReq.setPriority(crawlerPage.getRequest().getPriority());
+                            crawlerPage.addTargetRequest(newCrawlerReq);
+                        }*/
+
+                        // 解析页面
                         List<Parser> parsers = crawlerPage.getCrawler().getParsers();
                         for (Parser parser : parsers) {
                             String css = parser.getCss();
@@ -88,25 +114,30 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                             Selectable selectable = page.getHtml();
                             logger.debug(selectable.toString());
 
-                            if (StringUtils.isNotBlank(css)) {
-                                if (selectable != null) {
-                                    selectable = selectable.css(css);
-                                    filter = true;
+                            try {
+                                if (StringUtils.isNotBlank(css)) {
+                                    if (selectable != null) {
+                                        selectable = selectable.css(css);
+                                        filter = true;
+                                    }
                                 }
-                            }
-                            if (StringUtils.isNotBlank(xpath)) {
-                                if (selectable != null) {
-                                    selectable = selectable.xpath(xpath);
-                                    filter = true;
+                                if (StringUtils.isNotBlank(xpath)) {
+                                    if (selectable != null) {
+                                        selectable = selectable.xpath(xpath);
+                                        filter = true;
+                                    }
                                 }
-                            }
-                            if (StringUtils.isNotBlank(regex)) {
-                                if (selectable != null) {
-                                    selectable = selectable.regex(regex);
-                                    filter = true;
+                                if (StringUtils.isNotBlank(regex)) {
+                                    if (selectable != null) {
+                                        selectable = selectable.regex(regex);
+                                        filter = true;
+                                    }
                                 }
+                            } catch (Exception e) {
+                                filter = false;
+                                logger.warn("解析出错", e);
                             }
-                            
+
                             if (filter && selectable != null) {
                                 page.putField(parser.getNameKey(), selectable.all());
                             }
@@ -222,15 +253,36 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                         enterprise.setType(getFieldValue(itemMap.get(Enterprise.TYPE_KEY)));
                         enterprise.setUpdateDate(new Date());
                         // 保存到数据库
-                        enterpriseRepository.save(enterprise);
+                        enterpriseSet.add(enterpriseRepository.save(enterprise));
                     }
-                    resultMap.putAll(itemMap);
+                    for (Map.Entry<String, Object> entry : itemMap.entrySet()) {
+                        String entryKey = entry.getKey();
+                        Object entryValue = entry.getValue();
+                        if (resultMap.containsKey(entryKey)) {
+                            Object resultValue = resultMap.get(entryKey);
+                            if (resultValue instanceof Collection) {
+                                if (entry.getValue() instanceof Collection) {
+                                    ((Collection) resultValue).addAll((Collection)entryValue);
+                                } else {
+                                    ((Collection) resultValue).add(entryValue);
+                                }
+                            } else {
+                                List<Object> collection = new ArrayList<>();
+                                collection.add(resultValue);
+                                collection.add(entryValue);
+                                resultMap.put(entryKey, collection);
+                            }
+                        } else {
+                            resultMap.put(entryKey, entryValue);
+                        }
+                    }
                 }
             }).run();
             
             // 优先级递减
             priority--;
         }
+        return new ArrayList<>(enterpriseSet);
     }
     
     private String getFieldValue(Object o) {

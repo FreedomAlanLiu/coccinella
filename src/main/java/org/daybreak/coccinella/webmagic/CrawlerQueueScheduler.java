@@ -31,6 +31,7 @@ public class CrawlerQueueScheduler implements Scheduler {
         if (request instanceof CrawlerRequest) {
             CrawlerRequest crawlerRequest = (CrawlerRequest) request;
             if (crawlerRequest.isCanRepeat()) {
+                urls.add(request.getUrl());
                 queue.add(request);
             } else {
                 if (urls.add(request.getUrl())) {

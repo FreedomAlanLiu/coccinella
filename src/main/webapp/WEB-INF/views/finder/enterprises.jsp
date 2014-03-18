@@ -48,7 +48,7 @@
 <!-- BEGIN TOP NAVIGATION BAR -->
 <div class="header-inner">
 <!-- BEGIN LOGO -->
-<a class="navbar-brand" href="index.html">
+<a class="navbar-brand" href="${pageContext.request.contextPath}">
     <img src="${pageContext.request.contextPath}/resources/app/img/logo.png" alt="logo" class="img-responsive"/>
 </a>
 <!-- END LOGO -->
@@ -63,150 +63,132 @@
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
 <div class="page-content">
-    <div class="row search-form-default">
-        <div class="col-md-12">
-            <form class="form-inline" action="#">
-                <div class="input-group">
-                    <div class="input-cont">
-                        <input type="text" placeholder="Search..." class="form-control"/>
-                    </div>
-												<span class="input-group-btn">
-													<button type="button" class="btn green">
-                                                        Search &nbsp; <i class="m-icon-swapright m-icon-white"></i>
-                                                    </button>
-												</span>
-                </div>
-            </form>
+    <c:forEach var="enterprise" items="${enterprises.content}">
+        <div class="search-classic">
+            <h4>
+                <a data-toggle="modal" href="#modal_${enterprise.id}">
+                    ${enterprise.name}
+                </a>
+            </h4>
+            <p>
+                地址：${enterprise.address}  状态:${enterprise.currentStatus}
+            </p>
         </div>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Metronic - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Metronic is a responsive admin dashboard template powered with Twitter Bootstrap Framework for admin and backend applications. Metronic has a clean and intuitive metro style design which makes your next project look awesome and yet user friendly..
-        </p>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Conquer - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Conquer is a responsive admin dashboard template created mainly for admin and backend applications(CMS, CRM, Custom Admin Application, Admin Dashboard). Conquer template powered with Twitter Bootstrap Framework..
-        </p>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Metronic - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Metronic is a responsive admin dashboard template powered with Twitter Bootstrap Framework for admin and backend applications. Metronic has a clean and intuitive metro style design which makes your next project look awesome and yet user friendly..
-        </p>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Conquer - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Conquer is a responsive admin dashboard template created mainly for admin and backend applications(CMS, CRM, Custom Admin Application, Admin Dashboard). Conquer template powered with Twitter Bootstrap Framework..
-        </p>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Conquer - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Conquer is a responsive admin dashboard template created mainly for admin and backend applications(CMS, CRM, Custom Admin Application, Admin Dashboard). Conquer template powered with Twitter Bootstrap Framework..
-        </p>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Metronic - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Metronic is a responsive admin dashboard template powered with Twitter Bootstrap Framework for admin and backend applications. Metronic has a clean and intuitive metro style design which makes your next project look awesome and yet user friendly..
-        </p>
-    </div>
-    <div class="search-classic">
-        <h4>
-            <a href="#">
-                Conquer - Responsive Admin Dashboard Template
-            </a>
-        </h4>
-        <a href="#">
-            http://www.keenthemes.com
-        </a>
-        <p>
-            Conquer is a responsive admin dashboard template created mainly for admin and backend applications(CMS, CRM, Custom Admin Application, Admin Dashboard). Conquer template powered with Twitter Bootstrap Framework..
-        </p>
-    </div>
+        <div class="modal fade" id="modal_${enterprise.id}" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">${enterprise.name}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <p>
+                                        <span>名称：</span>
+                                    </p>
+                                    <p>
+                                        <span>注册编号：</span>
+                                    </p>
+                                    <p>
+                                        <span>法人：</span>
+                                    </p>
+                                    <p>
+                                        <span>地址：</span>
+                                    </p>
+                                    <p>
+                                        <span>注册资本：</span>
+                                    </p>
+                                    <p>
+                                        <span>企业状态：</span>
+                                    </p>
+                                    <p>
+                                        <span>公司类型：</span>
+                                    </p>
+                                    <p>
+                                        <span>成立日期：</span>
+                                    </p>
+                                    <p>
+                                        <span>登记机关：</span>
+                                    </p>
+                                    <p>
+                                        <span>经营范围：</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-9">
+                                    <p>
+                                        <span>${enterprise.name}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.registrationNumber}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.agent}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.address}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.registeredCapital}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.currentStatus}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.type}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.establishmentDate}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.registrationAuthority}</span>
+                                    </p>
+                                    <p>
+                                        <span>${enterprise.scope}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <form:form action="${pageContext.request.contextPath}/enterprises?p=0" method="post" modelAttribute="condition" id="research_crawl_form">
+                            <form:hidden path="province" value="${enterprise.aic.province}"/>
+                            <form:hidden path="enterpriseName" value="${enterprise.name}"/>
+                            <form:hidden path="cache" value="false"/>
+                        </form:form>
+                        <button id="research_button" type="button" class="btn blue" data-dismiss="modal">重新抓取</button>
+                        <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </c:forEach>
     <div class="margin-top-20">
         <ul class="pagination">
-            <li>
-                <a href="#">
-                    Prev
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    1
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    2
-                </a>
-            </li>
-            <li class="active">
-                <a href="#">
-                    3
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    4
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    5
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    Next
-                </a>
-            </li>
+            <c:if test="${enterprises.number > 0}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/enterprises?province=${condition.province}&enterpriseName=${condition.enterpriseName}&cache=true&p=${enterprises.number - 1}">
+                        上一页
+                    </a>
+                </li>
+            </c:if>
+            <c:forEach var="p" begin="0" end="${enterprises.totalPages - 1}" step="1">
+                <li <c:if test="${p == enterprises.number}">class="active"</c:if>>
+                    <a href="${pageContext.request.contextPath}/enterprises?province=${condition.province}&enterpriseName=${condition.enterpriseName}&cache=true&p=${p}">
+                        ${p + 1}
+                    </a>
+                </li>
+            </c:forEach>
+            <c:if test="${enterprises.number < enterprises.totalPages - 1}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/enterprises?province=${condition.province}&enterpriseName=${condition.enterpriseName}&cache=true&p=${enterprises.number + 1}">
+                        下一页
+                    </a>
+                </li>
+            </c:if>
         </ul>
     </div>
 </div>
@@ -217,7 +199,7 @@
 <!-- BEGIN FOOTER -->
 <div class="footer">
     <div class="footer-inner">
-        2014 &copy; Metronic by keenthemes.
+        2014 &copy; Coccinella.
     </div>
     <div class="footer-tools">
 		<span class="go-top">
@@ -265,21 +247,16 @@
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="${pageContext.request.contextPath}/resources/app/scripts/core/app.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/resources/app/scripts/custom/index.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/resources/app/scripts/custom/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
     jQuery(document).ready(function() {
         App.init(); // initlayout and core plugins
-        Index.init();
-        Index.initJQVMAP(); // init index page's custom scripts
-        Index.initCalendar(); // init index page's custom scripts
-        Index.initCharts(); // init index page's custom scripts
-        Index.initChat();
-        Index.initMiniCharts();
-        Index.initDashboardDaterange();
-        Index.initIntro();
-        Tasks.initDashboardWidget();
+
+        var researchButton = $('#research_button');
+        researchButton.click(function() {
+            $.blockUI({ message: '<h4>抓取中...</h4>' });
+            $('#research_crawl_form').submit();
+        });
     });
 </script>
 <!-- END JAVASCRIPTS -->

@@ -49,7 +49,8 @@
         <span> </span>
         <div class="page-lock-info">
             <h1>企业信息查询</h1>
-            <form:form id="finder_form" action="${pageContext.request.contextPath}/enterprises" modelAttribute="condition" cssClass="form-horizontal col-md-3" method="post">
+            <form:form id="finder_form" action="${pageContext.request.contextPath}/enterprises?p=0" modelAttribute="condition" cssClass="form-horizontal col-md-3" method="post">
+                <form:hidden path="cache" value="true"/>
                 <div class="form-group">
                     <form:select path="province" cssClass="form-control input-medium select2me" data-placeholder="选择一个省份或者直辖市...">
                         <option value=""></option>
@@ -115,8 +116,8 @@
         Lock.init();
 
         $('#finder_submit_button').click(function() {
+            $.blockUI({ message: '<h4>查询中...</h4>' });
             $('#finder_form').submit();
-            $.blockUI({ message: "<h4><img style='' src='${pageContext.request.contextPath}/resources/app/img/loading-spinner-grey.gif'/> 查询中...</h4>" });
         });
     });
 </script>
