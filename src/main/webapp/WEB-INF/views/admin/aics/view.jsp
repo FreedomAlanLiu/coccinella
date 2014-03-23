@@ -119,6 +119,9 @@
                                             ${crawler.url}
                                         </td>
                                         <td>
+                                            ${crawler.method}
+                                        </td>
+                                        <td>
                                             ${crawler.params}
                                         </td>
                                         <td>

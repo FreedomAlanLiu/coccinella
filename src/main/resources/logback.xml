@@ -8,9 +8,9 @@
     </appender>
 
     <appender name="APPLICATION_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/coccinella-application.log</file>
+        <file>logs/coccinella-application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/coccinella-application-%d{yyyyMMdd}.log</fileNamePattern>
+            <fileNamePattern>logs/coccinella-application-%d{yyyyMMdd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -20,9 +20,9 @@
     </appender>
 
     <appender name="MONITORING_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/coccinella-monitoring.log</file>
+        <file>logs/coccinella-monitoring.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/coccinella-monitoring-%d{yyyyMMdd}.log</fileNamePattern>
+            <fileNamePattern>logs/coccinella-monitoring-%d{yyyyMMdd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>

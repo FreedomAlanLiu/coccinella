@@ -28,10 +28,11 @@ public class MyPageProcessor implements PageProcessor {
         if (page instanceof CrawlerPage) {
             CrawlerPage crawlerPage = (CrawlerPage) page;
             Crawler crawler = crawlerPage.getCrawler();
-            if (crawler.getUrl().contains("method=doSearch")) {
+
+            if (crawler.getUrl().contains("GSJ=toList2")) {
                 Selectable selectable = page.getHtml();
-                //page.putField("page", page.getHtml());
-                page.putField("etpsName", selectable.css(".link6666cc").xpath("//a/@onclick").regex("'(.*?)'").all());
+                page.putField("page", page.getHtml());
+                //page.putField("etpsName", selectable.css(".link6666cc").xpath("//a/@onclick").regex("'(.*?)'").all());
             }
         }
     }
@@ -46,33 +47,33 @@ public class MyPageProcessor implements PageProcessor {
     @Test
     public void testCrawl() {
         Crawler c1 = new Crawler();
-        c1.setUrl("http://www.sgs.gov.cn/lz/etpsInfo.do?method=index");
+        c1.setUrl("http://www.zjecredit.org/zjecredit/index.do");
         c1.setMethod(HttpMethod.GET);
         c1.setEncode("utf-8");
-        
+
         Crawler c2 = new Crawler();
-        c2.setUrl("http://www.sgs.gov.cn/lz/etpsInfo.do?method=doSearch");
+        c2.setUrl("http://www.zjecredit.org/zjecredit/searchaction.do?GSJ=toLookUP2");
         c2.setMethod(HttpMethod.POST);
-        c2.setParams("searchType=1,keyWords=泓远软件");
+        c2.setParams("comName=房地产开发有限公司,people=");
         c2.setEncode("utf-8");
-        c2.setReferer("http://www.sgs.gov.cn/lz/etpsInfo.do?method=index");
-        
+        c2.setReferer("http://www.zjecredit.org/zjecredit/index.do");
+
         Crawler c3 = new Crawler();
-        c3.setUrl("http://www.sgs.gov.cn/lz/etpsInfo.do?method=viewDetail");
+        c3.setUrl("http://www.zjecredit.org/zjecredit/searchaction.do?GSJ=toList2");
         c3.setMethod(HttpMethod.POST);
-        c3.setParams("etpsId=150000022000060700017");
         c3.setEncode("utf-8");
-        c3.setReferer("http://www.sgs.gov.cn/lz/etpsInfo.do?method=doSearch");
-        
+        c3.setReferer("http://www.zjecredit.org/zjecredit/pages/search/waiting.jsp");
+
         CrawlerRequest req1 = new CrawlerRequest(c1);
-        req1.setPriority(10);
+        req1.setPriority(12);
+        
         CrawlerRequest req2 = new CrawlerRequest(c2);
-        req2.addParam("searchType", "1");
-        req2.addParam("keyWords", "泓远软件");
-        req2.setPriority(8);
+        req2.setPriority(10);
+        req2.addParam("comName", "房地产开发有限公司");
+        req2.addParam("people", "");
+
         CrawlerRequest req3 = new CrawlerRequest(c3);
-        req3.addParam("etpsId", "150000022000060700017");
-        req3.setPriority(6);
+        req3.setPriority(8);
 
         Spider.create(new MyPageProcessor())
                 .setDownloader(new CrawlerDownloader())

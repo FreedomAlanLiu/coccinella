@@ -72,8 +72,10 @@
 			</div>
 		</div>
 		<div class="form-actions">
+            <!--
 			<label class="checkbox">
 			<input type="checkbox" name="_spring_security_remember_me" value="1"/> 记住我 </label>
+			-->
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<button type="submit" class="btn green pull-right">
 			登录 <i class="m-icon-swapright m-icon-white"></i>
